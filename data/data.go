@@ -37,11 +37,6 @@ type Variant struct {
 	ProductID     uint
 }
 
-type Error struct {
-	Status  bool   `json:"status"`
-	Message string `json:"message"`
-}
-
 func DBMigrate(db *gorm.DB) *gorm.DB {
 	db.AutoMigrate(&Category{}, &Product{}, &Variant{})
 	return db

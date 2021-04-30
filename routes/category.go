@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/orwync/go-products/data"
+	"github.com/orwync/go-products/helper"
 )
 
 func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
@@ -23,16 +24,17 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
 	id := mux.Vars(r)["id"]
-	result := data.DBConn.First(&category, id)
+	err := data.DBConn.First(&category, id).Error
+	rw.Header().Set("content-type", "application/json")
 
-	if category.Name == "" {
+	if err != nil {
 		rw.WriteHeader(500)
-		errorMessage := errorMessage(result.Error.Error())
+		errorMessage := helper.ErrorMessage(err.Error())
 		json.NewEncoder(rw).Encode(errorMessage)
 		return
 	}
-
-	err := json.NewEncoder(rw).Encode(category)
+	rw.WriteHeader(200)
+	err = json.NewEncoder(rw).Encode(category)
 
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -42,10 +44,11 @@ func GetCategory(rw http.ResponseWriter, r *http.Request) {
 func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
 	err := json.NewDecoder(r.Body).Decode(&category)
+	rw.Header().Set("content-type", "application/json")
 
 	if err != nil {
 		rw.WriteHeader(500)
-		errorMessage := errorMessage(err.Error())
+		errorMessage := helper.ErrorMessage(err.Error())
 		json.NewEncoder(rw).Encode(errorMessage)
 		return
 	}
@@ -53,7 +56,7 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 	result := data.DBConn.Create(&category)
 
 	fmt.Println(result.Error)
-	fmt.Fprintf(rw, "Create Category")
+	json.NewEncoder(rw).Encode(category)
 
 }
 
@@ -62,12 +65,10 @@ func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCategory(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(rw, "Delete category")
-}
-
-func errorMessage(message string) data.Error {
-	return data.Error{
-		Status:  false,
-		Message: message,
-	}
+	id := mux.Vars(r)["id"]
+	data.DBConn.Delete(&data.Category{}, id)
+	rw.Header().Set("content-type", "application/json")
+	rw.WriteHeader(200)
+	message := helper.SuccessMessage("category deleted")
+	json.NewEncoder(rw).Encode(message)
 }
