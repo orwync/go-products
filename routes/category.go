@@ -71,7 +71,7 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = data.DBConn.Create(&category).Error
+	err = services.CreateCategory(&category)
 
 	if err != nil {
 		rw.WriteHeader(500)
@@ -90,19 +90,10 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 // 200: Category
 // 500: statusMessage
 func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	var category data.Category
-	err := data.DBConn.Find(&category, id).Error
-
-	if err != nil {
-		rw.WriteHeader(500)
-		errorMessage := helper.ErrorMessage(err.Error())
-		json.NewEncoder(rw).Encode(errorMessage)
-		return
-	}
-
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 	var updateCategory data.Category
-	err = json.NewDecoder(r.Body).Decode(&updateCategory)
+
+	err := json.NewDecoder(r.Body).Decode(&updateCategory)
 
 	if err != nil {
 		rw.WriteHeader(500)
@@ -111,7 +102,14 @@ func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.DBConn.Model(&category).Updates(updateCategory)
+	err = services.UpdateCategory(id, &updateCategory)
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
 
 	rw.WriteHeader(200)
 	message := helper.SuccessMessage("Category updated")
@@ -124,8 +122,8 @@ func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
 // 200: statusMessage
 // 500: statusMessage
 func DeleteCategory(rw http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	err := data.DBConn.Delete(&data.Category{}, id).Error
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	err := services.DeleteCategory(id)
 
 	if err != nil {
 		rw.WriteHeader(500)
