@@ -12,7 +12,7 @@ import (
 
 func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 	var categories []data.Category
-	data.DBConn.Find(&categories)
+	data.DBConn.Preload("Products").Find(&categories)
 	err := json.NewEncoder(rw).Encode(categories)
 
 	if err != nil {
@@ -23,7 +23,8 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
 	id := mux.Vars(r)["id"]
-	err := data.DBConn.First(&category, id).Error
+	err := data.DBConn.Preload("Products").First(&category, id).Error
+	fmt.Println(category)
 
 	if err != nil {
 		rw.WriteHeader(500)

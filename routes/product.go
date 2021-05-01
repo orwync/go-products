@@ -12,7 +12,7 @@ import (
 
 func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 	var products []data.Product
-	data.DBConn.Find(&products)
+	data.DBConn.Preload("Variant").Find(&products)
 	err := json.NewEncoder(rw).Encode(products)
 
 	if err != nil {
@@ -23,7 +23,7 @@ func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 func GetProduct(rw http.ResponseWriter, r *http.Request) {
 	var product data.Product
 	id := mux.Vars(r)["id"]
-	err := data.DBConn.First(&product, id).Error
+	err := data.DBConn.Preload("Variant").First(&product, id).Error
 
 	if err != nil {
 		rw.WriteHeader(500)

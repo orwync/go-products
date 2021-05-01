@@ -1,6 +1,8 @@
 package data
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 var (
 	DBConn *gorm.DB
@@ -9,7 +11,7 @@ var (
 type Category struct {
 	gorm.Model
 	Name     string    `json:"name"`
-	Products []Product `json:"-"`
+	Products []Product `json:"products"`
 	ParentID *uint     `json:"parentId"`
 	Parent   *Category `gorm:"foreignKey:ParentID;references:ID" json:"-"`
 }
@@ -19,7 +21,7 @@ type Product struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	ImageURL    string    `json:"imageURL"`
-	Variant     []Variant `json:"-"`
+	Variant     []Variant `json:"variants"`
 	CategoryID  uint      `json:"categoryId"`
 	ParentID    *uint     `json:"parentId"`
 	Parent      *Product  `gorm:"foreignKey:ParentID;references:ID" json:"-"`
