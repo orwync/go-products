@@ -9,13 +9,13 @@ import (
 
 func GetAllProducts() ([]data.Product, error) {
 	var products []data.Product
-	err := data.DBConn.Preload("Variant").Find(&products).Error
+	err := data.DBConn.Preload("Variant").Preload("Parent").Find(&products).Error
 	return products, err
 }
 
 func GetProduct(id int) (data.Product, error) {
 	var product data.Product
-	err := data.DBConn.Preload("Variant").First(&product, id).Error
+	err := data.DBConn.Preload("Variant").Preload("Parent").First(&product, id).Error
 	return product, err
 }
 

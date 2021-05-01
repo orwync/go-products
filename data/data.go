@@ -13,7 +13,7 @@ type Category struct {
 	Name     string    `json:"name"`
 	Products []Product `json:"products"`
 	ParentID *uint     `json:"parentId"`
-	Parent   *Category `gorm:"foreignKey:ParentID;references:ID" json:"-"`
+	Parent   *Category `gorm:"foreignKey:ParentID;references:ID" json:"children"`
 }
 
 type Product struct {
@@ -24,7 +24,7 @@ type Product struct {
 	Variant     []Variant `json:"variants"`
 	CategoryID  uint      `json:"categoryId"`
 	ParentID    *uint     `json:"parentId"`
-	Parent      *Product  `gorm:"foreignKey:ParentID;references:ID" json:"-"`
+	Parent      *Product  `gorm:"foreignKey:ParentID;references:ID" json:"children"`
 }
 
 type Variant struct {
