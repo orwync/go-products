@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/orwync/go-products/helper"
 )
 
 func HandleRoutes() *mux.Router {
@@ -34,6 +36,16 @@ func HandleRoutes() *mux.Router {
 	r.HandleFunc("/variant/{id:[0-9]+}", UpdateVariant).Methods(http.MethodPut)
 	r.HandleFunc("/variant/{id:[0-9]+}", DeleteVariant).Methods(http.MethodDelete)
 
+	//Not Found
+	r.NotFoundHandler = http.HandlerFunc(notFound)
+
 	return r
 
+}
+
+func notFound(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Add("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusNotFound)
+	errorMessage := helper.ErrorMessage("Page not found")
+	json.NewEncoder(rw).Encode(errorMessage)
 }

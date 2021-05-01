@@ -10,7 +10,7 @@ type Category struct {
 	gorm.Model
 	Name     string    `json:"name"`
 	Products []Product `json:"-"`
-	ParentID *uint     `json:"parent_id"`
+	ParentID *uint     `json:"parentId"`
 	Parent   *Category `gorm:"foreignKey:ParentID;references:ID" json:"-"`
 }
 
@@ -20,20 +20,19 @@ type Product struct {
 	Description string    `json:"description"`
 	ImageURL    string    `json:"imageURL"`
 	Variant     []Variant `json:"-"`
-	CategoryID  uint      `json:"category_id"`
-	ParentID    *uint     `json:"parent_id"`
+	CategoryID  uint      `json:"categoryId"`
+	ParentID    *uint     `json:"parentId"`
 	Parent      *Product  `gorm:"foreignKey:ParentID;references:ID" json:"-"`
 }
 
 type Variant struct {
 	gorm.Model
-	ID            uint    `json:"id" `
 	Name          string  `json:"name"`
 	MRP           float32 `json:"mrp"`
 	DiscountPrice float32 `json:"discountPrice"`
 	Size          int     `json:"size"`
 	Colour        string  `json:"colour"`
-	ProductID     uint
+	ProductID     uint    `json:"productId"`
 }
 
 func DBMigrate(db *gorm.DB) *gorm.DB {
