@@ -2,18 +2,23 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/orwync/go-products/data"
 	"github.com/orwync/go-products/helper"
+	"github.com/orwync/go-products/services"
 )
 
 func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
-	var categories []data.Category
-	data.DBConn.Preload("Products").Find(&categories)
-	err := json.NewEncoder(rw).Encode(categories)
+	categories, err := services.GetAllCategories()
+
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+
+	err = json.NewEncoder(rw).Encode(categories)
 
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -22,9 +27,8 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 
 func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
-	id := mux.Vars(r)["id"]
-	err := data.DBConn.Preload("Products").First(&category, id).Error
-	fmt.Println(category)
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	category, err := services.GetCategory(id)
 
 	if err != nil {
 		rw.WriteHeader(500)
@@ -51,9 +55,15 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := data.DBConn.Create(&category)
+	err = data.DBConn.Create(&category).Error
 
-	fmt.Println(result.Error)
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
 	json.NewEncoder(rw).Encode(category)
 
 }
