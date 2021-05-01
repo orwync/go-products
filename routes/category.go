@@ -58,7 +58,32 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(rw, "Update Category")
+	id := mux.Vars(r)["id"]
+	var category data.Category
+	err := data.DBConn.Find(&category, id).Error
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
+	var updateCategory data.Category
+	err = json.NewDecoder(r.Body).Decode(&updateCategory)
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
+	data.DBConn.Model(&category).Updates(updateCategory)
+
+	rw.WriteHeader(200)
+	message := helper.SuccessMessage("Category updated")
+	json.NewEncoder(rw).Encode(message)
 }
 
 func DeleteCategory(rw http.ResponseWriter, r *http.Request) {

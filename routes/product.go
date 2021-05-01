@@ -57,7 +57,32 @@ func CreateProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(rw, "Update Product")
+	id := mux.Vars(r)["id"]
+	var product data.Product
+	err := data.DBConn.Find(&product, id).Error
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
+	var updateProduct data.Product
+	err = json.NewDecoder(r.Body).Decode(&updateProduct)
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
+	data.DBConn.Model(&product).Updates(updateProduct)
+
+	rw.WriteHeader(200)
+	message := helper.SuccessMessage("product updated")
+	json.NewEncoder(rw).Encode(message)
 }
 
 func DeleteProduct(rw http.ResponseWriter, r *http.Request) {
