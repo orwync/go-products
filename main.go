@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/orwync/go-products/data"
 	"github.com/orwync/go-products/routes"
 	"gorm.io/driver/mysql"
@@ -12,7 +14,8 @@ import (
 )
 
 func initDatabase() {
-	dsn := "root:root@tcp(127.0.0.1:3306)/productsdb?charset=utf8mb4&parseTime=True&loc=Local"
+	connectionString := "%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf(connectionString, os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
 	var err error
 	data.DBConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -26,6 +29,7 @@ func initDatabase() {
 }
 
 func main() {
+	godotenv.Load()
 	initDatabase()
 	r := routes.HandleRoutes()
 
