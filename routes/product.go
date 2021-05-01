@@ -2,12 +2,13 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/orwync/go-products/data"
 	"github.com/orwync/go-products/helper"
+	"github.com/orwync/go-products/services"
 )
 
 // swagger:route GET /product product listProduct
@@ -16,12 +17,21 @@ import (
 // 200: categoriesResponse
 // 500: statusMessage
 func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
-	var products []data.Product
-	data.DBConn.Preload("Variant").Find(&products)
-	err := json.NewEncoder(rw).Encode(products)
+	products, err := services.GetAllProducts()
 
 	if err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+	err = json.NewEncoder(rw).Encode(products)
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
 	}
 }
 
@@ -31,9 +41,8 @@ func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 // 200: Product
 // 500: statusMessage
 func GetProduct(rw http.ResponseWriter, r *http.Request) {
-	var product data.Product
-	id := mux.Vars(r)["id"]
-	err := data.DBConn.Preload("Variant").First(&product, id).Error
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	product, err := services.GetProduct(id)
 
 	if err != nil {
 		rw.WriteHeader(500)
@@ -45,7 +54,10 @@ func GetProduct(rw http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(rw).Encode(product)
 
 	if err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
 	}
 }
 
@@ -65,9 +77,15 @@ func CreateProduct(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := data.DBConn.Create(&product)
+	err = services.CreateProduct(&product)
 
-	fmt.Println(result.Error)
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
+
 	json.NewEncoder(rw).Encode(product)
 }
 
@@ -77,19 +95,9 @@ func CreateProduct(rw http.ResponseWriter, r *http.Request) {
 // 200: Product
 // 500: statusMessage
 func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	var product data.Product
-	err := data.DBConn.Find(&product, id).Error
-
-	if err != nil {
-		rw.WriteHeader(500)
-		errorMessage := helper.ErrorMessage(err.Error())
-		json.NewEncoder(rw).Encode(errorMessage)
-		return
-	}
-
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 	var updateProduct data.Product
-	err = json.NewDecoder(r.Body).Decode(&updateProduct)
+	err := json.NewDecoder(r.Body).Decode(&updateProduct)
 
 	if err != nil {
 		rw.WriteHeader(500)
@@ -98,7 +106,14 @@ func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.DBConn.Model(&product).Updates(updateProduct)
+	err = services.UpdateProduct(id, &updateProduct)
+
+	if err != nil {
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
+	}
 
 	rw.WriteHeader(200)
 	message := helper.SuccessMessage("product updated")
@@ -111,8 +126,8 @@ func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 // 200: successMessage
 // 500: errorMessage
 func DeleteProduct(rw http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	err := data.DBConn.Delete(&data.Product{}, id).Error
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	err := services.DeleteProduct(id)
 
 	if err != nil {
 		rw.WriteHeader(500)

@@ -20,13 +20,18 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 	categories, err := services.GetAllCategories()
 
 	if err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
 	}
-
 	err = json.NewEncoder(rw).Encode(categories)
 
 	if err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		rw.WriteHeader(500)
+		errorMessage := helper.ErrorMessage(err.Error())
+		json.NewEncoder(rw).Encode(errorMessage)
+		return
 	}
 }
 
