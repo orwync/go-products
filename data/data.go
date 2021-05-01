@@ -16,14 +16,13 @@ type Category struct {
 
 type Product struct {
 	gorm.Model
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	ImageURL    string `json:"imageURL"`
-	Variant     []Variant
-	CategoryID  uint
-	ParentID    *uint
-	Parent      *Product `gorm:"foreignKey:ParentID;references:ID"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	ImageURL    string    `json:"imageURL"`
+	Variant     []Variant `json:"-"`
+	CategoryID  uint      `json:"category_id"`
+	ParentID    *uint     `json:"parent_id"`
+	Parent      *Product  `gorm:"foreignKey:ParentID;references:ID" json:"-"`
 }
 
 type Variant struct {

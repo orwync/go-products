@@ -37,7 +37,7 @@ func main() {
 	r.Use(helper.SetContentType)
 
 	s := &http.Server{
-		Addr:         ":8000",
+		Addr:         os.Getenv("PORT"),
 		Handler:      r,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
