@@ -11,6 +11,11 @@ import (
 	"github.com/orwync/go-products/services"
 )
 
+// swagger:route GET /category category listCategory
+// Returns a list category
+// responses:
+// 200: categoriesResponse
+// 500: statusMessage
 func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 	categories, err := services.GetAllCategories()
 
@@ -25,6 +30,11 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route GET /category/{id} category getCategory
+// Returns a category by id
+// responses:
+// 200: Category
+// 500: statusMessage
 func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
@@ -44,6 +54,12 @@ func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route POST /category category createCategory
+// Creates a new category
+// parameters: createCategory
+// responses:
+// 200: Category
+// 500: statusMessage
 func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category
 	err := json.NewDecoder(r.Body).Decode(&category)
@@ -68,6 +84,11 @@ func CreateCategory(rw http.ResponseWriter, r *http.Request) {
 
 }
 
+// swagger:route PUT /category/{id} category editCategory
+// Edit existing category
+// responses:
+// 200: Category
+// 500: statusMessage
 func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	var category data.Category
@@ -97,6 +118,11 @@ func UpdateCategory(rw http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(rw).Encode(message)
 }
 
+// swagger:route DELETE /category/{id} category deleteCategory
+// Delete existing category
+// responses:
+// 200: statusMessage
+// 500: statusMessage
 func DeleteCategory(rw http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	err := data.DBConn.Delete(&data.Category{}, id).Error

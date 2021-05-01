@@ -1,3 +1,19 @@
+// Package classification Category API.
+//
+// Documentation of our Category API.
+//
+//     Schemes: http
+//     BasePath: /
+//     Version: 1.0.0
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//
+// swagger:meta
 package routes
 
 import (

@@ -10,6 +10,11 @@ import (
 	"github.com/orwync/go-products/helper"
 )
 
+// swagger:route GET /product product listProduct
+// Returns a list product
+// responses:
+// 200: categoriesResponse
+// 500: statusMessage
 func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 	var products []data.Product
 	data.DBConn.Preload("Variant").Find(&products)
@@ -20,6 +25,11 @@ func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route GET /product/{id} product getProduct
+// Returns a product by id
+// responses:
+// 200: Product
+// 500: statusMessage
 func GetProduct(rw http.ResponseWriter, r *http.Request) {
 	var product data.Product
 	id := mux.Vars(r)["id"]
@@ -39,6 +49,11 @@ func GetProduct(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route POST /product product createProduct
+// Creates a new product
+// responses:
+// 200: Product
+// 500: statusMessage
 func CreateProduct(rw http.ResponseWriter, r *http.Request) {
 	var product data.Product
 	err := json.NewDecoder(r.Body).Decode(&product)
@@ -56,6 +71,11 @@ func CreateProduct(rw http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(rw).Encode(product)
 }
 
+// swagger:route PUT /product/{id} product editProduct
+// Edit existing product
+// responses:
+// 200: Product
+// 500: statusMessage
 func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	var product data.Product
@@ -85,6 +105,11 @@ func UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(rw).Encode(message)
 }
 
+// swagger:route DELETE /product/{id} product deleteProduct
+// Delete existing product
+// responses:
+// 200: successMessage
+// 500: errorMessage
 func DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	err := data.DBConn.Delete(&data.Product{}, id).Error
@@ -97,6 +122,6 @@ func DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	rw.WriteHeader(200)
-	message := helper.SuccessMessage("category deleted")
+	message := helper.SuccessMessage("product deleted")
 	json.NewEncoder(rw).Encode(message)
 }

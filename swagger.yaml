@@ -1,0 +1,626 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Category:
+    description: a category returns in the response
+    properties:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      ID:
+        description: |-
+          Single category
+          in:body
+        format: int64
+        type: integer
+      UpdatedAt:
+        format: date-time
+        type: string
+      name:
+        type: string
+        x-go-name: Name
+      parent:
+        items:
+          $ref: '#/definitions/Category'
+        type: array
+        x-go-name: Parent
+      parentId:
+        format: uint64
+        type: integer
+        x-go-name: ParentID
+      products:
+        items:
+          $ref: '#/definitions/Product'
+        type: array
+        x-go-name: Products
+    type: object
+    x-go-package: _/home/orwyn/Documents/projects/go-products/routes
+  Product:
+    description: a product returns in the response
+    properties:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      ID:
+        description: |-
+          Single product
+          in:body
+        format: int64
+        type: integer
+      UpdatedAt:
+        format: date-time
+        type: string
+      categoryId:
+        format: uint64
+        type: integer
+        x-go-name: CategoryID
+      description:
+        type: string
+        x-go-name: Description
+      imageURL:
+        type: string
+        x-go-name: ImageURL
+      name:
+        type: string
+        x-go-name: Name
+      parent:
+        items:
+          $ref: '#/definitions/Product'
+        type: array
+        x-go-name: Parent
+      parentId:
+        format: uint64
+        type: integer
+        x-go-name: ParentID
+      variants:
+        items:
+          $ref: '#/definitions/Variant'
+        type: array
+        x-go-name: Variant
+    type: object
+    x-go-package: _/home/orwyn/Documents/projects/go-products/routes
+  Variant:
+    description: a variant returns in the response
+    properties:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      UpdatedAt:
+        format: date-time
+        type: string
+      colour:
+        type: string
+        x-go-name: Colour
+      discountPrice:
+        format: float
+        type: number
+        x-go-name: DiscountPrice
+      mrp:
+        format: float
+        type: number
+        x-go-name: MRP
+      name:
+        description: |-
+          Single variant
+          in:body
+        type: string
+        x-go-name: Name
+      productId:
+        format: uint64
+        type: integer
+        x-go-name: ProductID
+      size:
+        format: int64
+        type: integer
+        x-go-name: Size
+    type: object
+    x-go-package: _/home/orwyn/Documents/projects/go-products/routes
+  statusMessage:
+    description: Status response
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+      status:
+        description: |-
+          Status messages
+          in:body
+        type: boolean
+        x-go-name: Status
+    type: object
+    x-go-name: StatusMessage
+    x-go-package: _/home/orwyn/Documents/projects/go-products/routes
+info:
+  description: Documentation of our Category API.
+  title: Category API.
+  version: 1.0.0
+paths:
+  /category:
+    get:
+      description: Returns a list category
+      operationId: listCategory
+      responses:
+        "200":
+          $ref: '#/responses/categoriesResponse'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - category
+    post:
+      description: Creates a new category
+      operationId: createCategory
+      parameters:
+      - description: category name
+        in: query
+        name: name
+        required: true
+        type: string
+        x-go-name: Name
+      - description: category parent id
+        format: uint64
+        in: query
+        name: parentId
+        type: integer
+        x-go-name: ParentID
+      responses:
+        "200":
+          description: Category
+          schema:
+            $ref: '#/definitions/Category'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - category
+  /category/{id}:
+    delete:
+      description: Delete existing category
+      operationId: deleteCategory
+      parameters:
+      - description: The id of the category
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - category
+    get:
+      description: Returns a category by id
+      operationId: getCategory
+      parameters:
+      - description: The id of the category
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Category
+          schema:
+            $ref: '#/definitions/Category'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - category
+    put:
+      description: Edit existing category
+      operationId: editCategory
+      parameters:
+      - description: category name
+        in: query
+        name: name
+        required: true
+        type: string
+        x-go-name: Name
+      - description: category parent id
+        format: uint64
+        in: query
+        name: parentId
+        type: integer
+        x-go-name: ParentID
+      - description: The id of the category
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Category
+          schema:
+            $ref: '#/definitions/Category'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - category
+  /product:
+    get:
+      description: Returns a list product
+      operationId: listProduct
+      responses:
+        "200":
+          $ref: '#/responses/categoriesResponse'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - product
+    post:
+      description: Creates a new product
+      operationId: createProduct
+      parameters:
+      - description: The name of the product
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - in: query
+        name: description
+        type: string
+        x-go-name: Description
+      - in: query
+        name: imageURL
+        type: string
+        x-go-name: ImageURL
+      - format: uint64
+        in: query
+        name: categoryId
+        type: integer
+        x-go-name: CategoryID
+      - format: uint64
+        in: query
+        name: parentId
+        type: integer
+        x-go-name: ParentID
+      responses:
+        "200":
+          description: Product
+          schema:
+            $ref: '#/definitions/Product'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - product
+  /product/{id}:
+    delete:
+      description: Delete existing product
+      operationId: deleteProduct
+      parameters:
+      - description: The id of the product
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/successMessage'
+        "500":
+          $ref: '#/responses/errorMessage'
+      tags:
+      - product
+    get:
+      description: Returns a product by id
+      operationId: getProduct
+      parameters:
+      - description: The id of the product
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Product
+          schema:
+            $ref: '#/definitions/Product'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - product
+    put:
+      description: Edit existing product
+      operationId: editProduct
+      parameters:
+      - description: The name of the product
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - in: query
+        name: description
+        type: string
+        x-go-name: Description
+      - in: query
+        name: imageURL
+        type: string
+        x-go-name: ImageURL
+      - format: uint64
+        in: query
+        name: categoryId
+        type: integer
+        x-go-name: CategoryID
+      - format: uint64
+        in: query
+        name: parentId
+        type: integer
+        x-go-name: ParentID
+      - description: The id of the product
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Product
+          schema:
+            $ref: '#/definitions/Product'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - product
+  /variant:
+    get:
+      description: Returns a list variant
+      operationId: listVariant
+      responses:
+        "200":
+          $ref: '#/responses/categoriesResponse'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - variant
+    post:
+      description: Creates a new variant
+      operationId: createVariant
+      parameters:
+      - description: The details of the varinat
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - format: float
+        in: query
+        name: mrp
+        type: number
+        x-go-name: MRP
+      - format: float
+        in: query
+        name: discountPrice
+        type: number
+        x-go-name: DiscountPrice
+      - format: int64
+        in: query
+        name: size
+        type: integer
+        x-go-name: Size
+      - in: query
+        name: colour
+        type: string
+        x-go-name: Colour
+      - format: uint64
+        in: query
+        name: productId
+        type: integer
+        x-go-name: ProductID
+      responses:
+        "200":
+          description: Variant
+          schema:
+            $ref: '#/definitions/Variant'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - variant
+  /variant/{id}:
+    delete:
+      description: Delete existing variant
+      operationId: deleteVariant
+      parameters:
+      - description: The id of the varinat
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/successMessage'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - variant
+    get:
+      description: Returns a variant by id
+      operationId: getVariant
+      parameters:
+      - description: The id of the varinat
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Variant
+          schema:
+            $ref: '#/definitions/Variant'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - variant
+    put:
+      description: Edit existing variant
+      operationId: editVariant
+      parameters:
+      - description: The id of the varinat
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          description: Variant
+          schema:
+            $ref: '#/definitions/Variant'
+        "500":
+          description: statusMessage
+          schema:
+            $ref: '#/definitions/statusMessage'
+      tags:
+      - variant
+produces:
+- application/json
+responses:
+  categoryResponse:
+    description: a category returns in the response
+    headers:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      UpdatedAt:
+        format: date-time
+        type: string
+      name:
+        type: string
+      parent:
+        items:
+          $ref: '#/definitions/Category'
+        type: array
+      parentId:
+        format: uint64
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/Product'
+        type: array
+  productResponse:
+    description: a product returns in the response
+    headers:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      UpdatedAt:
+        format: date-time
+        type: string
+      categoryId:
+        format: uint64
+        type: integer
+      description:
+        type: string
+      imageURL:
+        type: string
+      name:
+        type: string
+      parent:
+        items:
+          $ref: '#/definitions/Product'
+        type: array
+      parentId:
+        format: uint64
+        type: integer
+      variants:
+        items:
+          $ref: '#/definitions/Variant'
+        type: array
+  productsResponse:
+    description: A list of product returns in the response
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
+  variantResponse:
+    description: a variant returns in the response
+    headers:
+      CreatedAt:
+        format: date-time
+        type: string
+      DeletedAt:
+        format: date-time
+        type: string
+      UpdatedAt:
+        format: date-time
+        type: string
+      colour:
+        type: string
+      discountPrice:
+        format: float
+        type: number
+      mrp:
+        format: float
+        type: number
+      productId:
+        format: uint64
+        type: integer
+      size:
+        format: int64
+        type: integer
+  variantsResponse:
+    description: A list of variants returns in the response
+    schema:
+      items:
+        $ref: '#/definitions/Variant'
+      type: array
+schemes:
+- http
+swagger: "2.0"
