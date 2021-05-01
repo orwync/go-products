@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/orwync/go-products/data"
+	"github.com/orwync/go-products/helper"
 	"github.com/orwync/go-products/routes"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -32,6 +33,8 @@ func main() {
 	godotenv.Load()
 	initDatabase()
 	r := routes.HandleRoutes()
+
+	r.Use(helper.SetContentType)
 
 	s := &http.Server{
 		Addr:         ":8000",
