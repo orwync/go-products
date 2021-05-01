@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orwync/go-products/data"
 )
@@ -26,7 +25,6 @@ func CreateProduct(product *data.Product) error {
 func UpdateProduct(id int, updateProduct *data.Product) error {
 	var product data.Product
 	data.DBConn.Find(&product, id)
-	fmt.Print(product)
 
 	if product.ID == 0 {
 		return errors.New("record not found")

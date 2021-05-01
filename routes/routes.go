@@ -18,7 +18,6 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -27,9 +26,6 @@ import (
 
 func HandleRoutes() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(rw, "Hello there")
-	})
 
 	//Category api
 	r.HandleFunc("/category", GetAllCategories).Methods(http.MethodGet)

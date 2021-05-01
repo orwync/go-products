@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orwync/go-products/data"
 )
@@ -26,7 +25,6 @@ func CreateVariant(variant *data.Variant) error {
 func UpdateVariant(id int, updateVariant *data.Variant) error {
 	var variant data.Variant
 	data.DBConn.Find(&variant, id)
-	fmt.Print(variant)
 
 	if variant.ID == 0 {
 		return errors.New("record not found")
