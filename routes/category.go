@@ -38,7 +38,7 @@ func GetAllCategories(rw http.ResponseWriter, r *http.Request) {
 // swagger:route GET /category/{id} category getCategory
 // Returns a category by id
 // responses:
-// 200: Category
+// 200: categoryResponse
 // 500: statusMessage
 func GetCategory(rw http.ResponseWriter, r *http.Request) {
 	var category data.Category

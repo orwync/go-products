@@ -17,9 +17,9 @@ type Category struct {
 	DeletedAt time.Time
 }
 
+// A list of categoriest returns in the response
+// swagger:response categoriesResponse
 type CategoriesResponse struct {
-	// A list of categoriest returns in the response
-	// swagger:response categoriesResponse
 	// All the categoriest in the system
 	// in:body
 	Body []Category

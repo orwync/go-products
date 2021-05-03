@@ -14,7 +14,7 @@ import (
 // swagger:route GET /product product listProduct
 // Returns a list product
 // responses:
-// 200: categoriesResponse
+// 200: productsResponse
 // 500: statusMessage
 func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 	products, err := services.GetAllProducts()
@@ -38,7 +38,7 @@ func GetAllProducts(rw http.ResponseWriter, r *http.Request) {
 // swagger:route GET /product/{id} product getProduct
 // Returns a product by id
 // responses:
-// 200: Product
+// 200: productResponse
 // 500: statusMessage
 func GetProduct(rw http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])

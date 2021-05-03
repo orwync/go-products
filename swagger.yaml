@@ -221,9 +221,7 @@ paths:
         x-go-name: ID
       responses:
         "200":
-          description: Category
-          schema:
-            $ref: '#/definitions/Category'
+          $ref: '#/responses/categoryResponse'
         "500":
           description: statusMessage
           schema:
@@ -270,7 +268,7 @@ paths:
       operationId: listProduct
       responses:
         "200":
-          $ref: '#/responses/categoriesResponse'
+          $ref: '#/responses/productsResponse'
         "500":
           description: statusMessage
           schema:
@@ -347,9 +345,7 @@ paths:
         x-go-name: ID
       responses:
         "200":
-          description: Product
-          schema:
-            $ref: '#/definitions/Product'
+          $ref: '#/responses/productResponse'
         "500":
           description: statusMessage
           schema:
@@ -526,6 +522,12 @@ paths:
 produces:
 - application/json
 responses:
+  categoriesResponse:
+    description: A list of categoriest returns in the response
+    schema:
+      items:
+        $ref: '#/definitions/Category'
+      type: array
   categoryResponse:
     description: a category returns in the response
     headers:
