@@ -5,7 +5,7 @@ To download the dependency:
 
 go-swagger needs to be installed
 
-###Documentation:
+### Documentation:
 
 To check if swagger is installed:
 `make check-swagger`
